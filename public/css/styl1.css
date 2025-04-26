@@ -1,0 +1,809 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7fafc;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #f8f8f8;
+    padding: 16px;
+
+}
+
+.nav-menu {
+    width: 100%;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    max-height: 50px;
+    /* Adjust the height as needed */
+}
+
+.nav-list {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list li {
+    margin-left: 16px;
+}
+
+.nav-list a {
+    color: rgb(23, 23, 23);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-list a:hover {
+    color: #ae0000c4;
+}
+
+/* Slider Section */
+.slider-container {
+    width: 100%;
+    /* Слайдер будет на всю ширину экрана */
+    height: 650px;
+    /* Фиксированная высота */
+    overflow: hidden;
+    /* Убираем лишние части, если изображение больше контейнера */
+    position: relative;
+    /* Позволяет позиционировать дочерние элементы */
+
+}
+
+.swiper-container {
+    width: 100%;
+    /* Ширина слайдера на 100% */
+    height: 100%;
+    /* Высота равна высоте секции */
+}
+
+.swiper-slide {
+    display: flex;
+    /* Flexbox для выравнивания содержимого */
+    justify-content: center;
+    /* Горизонтальное центрирование */
+    align-items: center;
+    /* Вертикальное центрирование */
+    width: 100%;
+    /* Слайд занимает всю ширину контейнера */
+    height: 100%;
+    /* Высота равна высоте контейнера */
+}
+
+.swiper-slide img {
+    width: 100%;
+    /* Ширина изображения на 100% */
+    height: 100%;
+    /* Высота на 100% */
+    object-fit: cover;
+    /* Изображение будет обрезано, если оно не соответствует соотношению сторон */
+    object-position: center;
+    /* Центрируем изображение по середине */
+}
+
+.text-overlay {
+    position: absolute;
+    /* Абсолютное позиционирование для наложения текста */
+    color: white;
+    /* Цвет текста */
+    font-size: 48px;
+    /* Размер шрифта */
+    text-align: center;
+    /* Центрируем текст */
+    top: 50%;
+    /* Центрируем текст по вертикали */
+    left: 50%;
+    /* Центрируем текст по горизонтали */
+    transform: translate(-50%, -50%);
+    /* Сдвигаем текст, чтобы он был точно по центру */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    /* Тень для улучшения читаемости текста */
+    z-index: 10;
+    /* Убедитесь, что текст отображается над изображением */
+}
+
+/* Before/After Comparison Section */
+.before-after-comparison {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.before-after-comparison h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.twentytwenty-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Services Section */
+.services {
+    background-color: #f7fafc;
+    padding: 40px 20px;
+}
+
+.services h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.services-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+.service-card {
+    position: relative;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    padding: 0;
+    /* Remove padding to make the image take full space */
+    text-align: center;
+    border-radius: 8px;
+    flex: 1 1 calc(33% - 20px);
+    /* 3 items per row, accounting for the gap */
+    margin: 10px;
+    overflow: hidden;
+    /* Ensures the image doesn't go beyond the card's bounds */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Adds a slight shadow */
+}
+
+@media (max-width: 768px) {
+    .service-card {
+        flex: 1 1 calc(50% - 20px);
+        /* 2 items per row on tablet screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .service-card {
+        flex: 1 1 100%;
+        /* 1 item per row on smaller screens */
+    }
+}
+
+.service-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures the image covers the full area and remains proportional */
+    transition: transform 0.3s ease;
+    /* Smooth zoom effect on hover */
+}
+
+.service-card:hover img {
+    transform: scale(1.05);
+    /* Slight zoom on hover */
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Dark overlay on the image */
+    z-index: 1;
+    /* Ensures the overlay stays on top of the image */
+}
+
+.service-card h3,
+.service-card p {
+    position: absolute;
+    z-index: 2;
+    /* Places the text above the dark overlay */
+    color: rgb(213, 213, 213);
+    left: 50%;
+    transform: translateX(-50%);
+    /* Centers the text horizontally */
+    margin: 0;
+}
+
+.service-card h3 {
+    top: 40%;
+    /* Adjusts the positioning of the title */
+    font-size: 1.5rem;
+}
+
+.service-card p {
+    top: 55%;
+    /* Adjusts the positioning of the subtext */
+    font-size: 1rem;
+}
+
+/* Responsive h3 Font Size for Tablets and Smaller Screens */
+@media (max-width: 768px) {
+    .service-card h3 {
+        font-size: 1.3rem;
+        /* Smaller font for tablets */
+    }
+
+    .service-card p {
+        font-size: 0.9rem;
+        /* Adjust subtext size on tablets */
+    }
+}
+
+/* Responsive h3 Font Size for Mobile Screens */
+@media (max-width: 480px) {
+    .service-card h3 {
+        font-size: 1.1rem;
+        /* Smaller font for mobile screens */
+    }
+
+    .service-card p {
+        font-size: 0.85rem;
+        /* Adjust subtext size for mobile */
+    }
+}
+
+/* Map Section */
+
+/* Footer */
+.footer {
+    background-color: #1c1c1d;
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.footer .container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer p {
+    margin-bottom: 16px;
+}
+
+.footer .social-link {
+    color: #63b3ed;
+    text-decoration: none;
+}
+
+.footer .social-link:hover {
+    text-decoration: underline;
+}
+
+/* Contact Form */
+.contact-form {
+    margin-top: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.contact-form button {
+    padding: 10px 20px;
+    background-color: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.contact-form button:hover {
+    background-color: #2b6cb0;
+}
+
+.category_centered {
+    display: flex;
+    justify-content: center;
+}
+
+#service-selection {
+    padding-top: 50px;
+    max-width: 1300px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin: 0 auto;
+    flex-direction: column;
+    overflow: hidden;
+    /* Ukrywa nadmiar treści podczas zmiany wysokości */
+    transition: height 0.3s ease;
+    /* Dodaj animację zmiany wysokości */
+}
+
+
+.category {
+    margin: 20px 0;
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 1.25rem;
+}
+
+.sub-services {
+    display: none;
+    margin: 20px 0;
+}
+
+.uslugi_h1 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.step {
+    padding: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.step.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.service_bg {
+    background-size: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#category-select,
+#size-select,
+#service-select {
+    width: 40%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #1f1f1f;
+    /* Темный фон для селектора */
+    color: #e0e0e0;
+    /* Цвет текста */
+    border: 1px solid #333;
+    /* Обводка */
+    border-radius: 5px;
+    /* Закругленные углы */
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#category-select option {
+    background-color: #1f1f1f;
+    /* Фон для опций */
+    color: #e0e0e0;
+    /* Цвет текста опций */
+}
+
+#category-select:hover {
+    background-color: #333;
+    /* Меняется цвет при наведении */
+    color: #fff;
+    /* Белый текст при наведении */
+}
+
+#category-select:focus {
+    outline: none;
+    border-color: #838383;
+    /* Цвет обводки при фокусе */
+    box-shadow: 0 0 5px rgba(169, 169, 169, 0.8);
+    /* Легкая подсветка */
+}
+
+#submit-button {
+    background-color: #212121;
+    border-radius: 7px;
+    display: inline-block;
+    cursor: pointer;
+    color: #e3e3e3;
+    font-weight: bold;
+    padding: 7px 42px;
+    text-decoration: none;
+    width: 30%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+#submit-button:hover {
+    background-color: #000000;
+}
+
+#submit-button:active {
+    position: relative;
+    top: 1px;
+}
+
+/* Стили для формы */
+.private-information input,
+.timing input {
+    width: 15%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.private-information input::placeholder,
+.timing input::placeholder {
+    color: #e0e0e0;
+}
+
+/* Стили для меток */
+.private-information label,
+.timing label {
+    color: #1f1f1f;
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+/* Стили для инпутов при наведении */
+.private-information input:hover,
+.timing input:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Стили для инпутов при фокусе */
+.private-information input:focus,
+.timing input:focus {
+    outline: none;
+    border-color: #838383;
+    box-shadow: 0 0 5px rgba(169, 169, 169, 0.8);
+}
+
+.private-information {
+    margin-top: 20px;
+}
+
+/* Стили для контейнеров */
+.private-information,
+.timing {
+    margin-bottom: 20px;
+}
+
+.timing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-slot {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.time-slot:hover {
+    background-color: #f0f0f0;
+}
+
+.time-slot.disabled {
+    background-color: #dcdcdc;
+    cursor: not-allowed;
+}
+
+.time-slot.selected {
+    background-color: #4CAF50;
+    /* Zielone tło */
+    color: white;
+    /* Biały tekst */
+    border: 2px solid #388E3C;
+    /* Pogrubiona obramówka */
+}
+
+body.modal-open {
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Styl okna dialogowego */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Przyciemnione tło */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    /* Białe tło */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* Lekka ramka */
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.modal-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.close-button {
+    background-color: #4CAF50;
+    /* Zielony kolor */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.close-button:hover {
+    background-color: #45A049;
+    /* Jaśniejszy zielony */
+}
+
+.accountblock {
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+.accountblock h1,h2,p{
+    margin-bottom: 20px;
+}
+
+.logout{
+    margin-top: 20px;
+    background-color: #212121;
+    border-radius: 7px;
+    display: inline-block;
+    cursor: pointer;
+    color: #e3e3e3;
+    font-weight: bold;
+    padding: 7px 42px;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+.logout{
+    background-color: #000000;
+}
+
+.history{
+    margin-top: 20px;
+}
+
+/* Pasek lojalności - kontener */
+.loyalty-bar {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f3f3f3;
+    margin: 20px 0;
+    overflow: hidden;
+    display: flex;
+}
+
+/* Segmenty poziomów lojalności */
+.loyalty-segment {
+    flex: 1;
+    text-align: center;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+}
+
+.silver {
+    background-color: #b0c4de; /* Kolor dla Silver */
+}
+
+.platinum {
+    background-color: #e5e4e2; /* Kolor dla Platinum */
+}
+
+.gold {
+    background-color: #ffd700; /* Kolor dla Gold */
+}
+
+/* Dynamiczny pasek postępu */
+.loyalty-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #4CAF50; /* Zielony kolor postępu */
+    width: 0; /* Dynamiczna szerokość */
+    border-radius: 8px 0 0 8px; /* Zaokrąglony lewy koniec */
+    z-index: 1;
+    transition: width 1s ease-out; /* Animacja wypełniania */
+}
+
+/* Etykieta z procentem */
+.loyalty-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 2; /* Widoczna nad paskiem */
+}
+
+.pricecontainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.pricecontainer h1{
+    text-align: center;
+}
+
+.pricecontainer h2{
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.pricing-table {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.pricing-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 600px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-item h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.pricing-item p {
+    font-size: 16px;
+    color: #555;
+    margin: 5px 0;
+}
+
+.bonush{
+    margin-top: 20px;
+}
+
+/* Ogólne ustawienia dla formularzy logowania i rejestracji */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff; /* Białe tło */
+    border: 1px solid #e2e8f0; /* Subtelna ramka */
+    border-radius: 8px; /* Zaokrąglone rogi */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lekki cień */
+    text-align: center;
+}
+
+.auth-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333333; /* Główny kolor tekstu */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-container label {
+    font-size: 14px;
+    color: #555555;
+    text-align: left;
+}
+
+.auth-container input {
+    padding: 10px;
+    border: 1px solid #1c1c1d;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f9f9f9; /* Subtelne tło */
+    transition: border-color 0.3s ease;
+}
+
+.auth-container input:focus {
+    border-color: #3182ce; /* Kolor akcentu */
+    outline: none;
+}
+
+.auth-container button {
+    padding: 10px;
+    background-color: #1c1c1d; /* Kolor przycisku */
+    color: #ffffff; /* Biały tekst */
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-container button:hover {
+    background-color: #2b6cb0; /* Ciemniejszy akcent */
+}
+
+.auth-container p {
+    font-size: 14px;
+    color: #555555;
+    margin-top: 20px;
+}
+
+.auth-container a {
+    color: #3182ce; /* Link w kolorze akcentu */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.auth-container a:hover {
+    color: #2b6cb0; /* Ciemniejszy akcent */
+}

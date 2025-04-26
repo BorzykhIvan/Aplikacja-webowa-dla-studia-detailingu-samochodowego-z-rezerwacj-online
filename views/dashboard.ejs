@@ -1,0 +1,59 @@
+<div class="accountblock">
+<h1>Witaj na swoim koncie!</h1>
+<p>Zalogowany jako: <%= user.email %></p>
+
+<h2>Nadchodzące rezerwacje</h2>
+<% if (upcomingEvents.length > 0) { %>
+    <ul>
+        <% upcomingEvents.forEach(event => { %>
+            <li>
+                <strong>Usługa:</strong> <%= event.summary %><br>
+                <strong>Data:</strong> <%= new Date(event.start.dateTime).toLocaleString() %><br>
+                <strong>Opis:</strong> <%= event.description || 'Brak opisu' %>
+            </li>
+        <% }) %>
+    </ul>
+<% } else { %>
+    <p>Brak nadchodzących rezerwacji.</p>
+<% } %>
+
+<h2 class="history">Historia rezerwacji</h2>
+<% if (pastEvents.length > 0) { %>
+    <ul>
+        <% pastEvents.forEach(event => { %>
+            <li>
+                <strong>Usługa:</strong> <%= event.summary %><br>
+                <strong>Data:</strong> <%= new Date(event.start.dateTime).toLocaleString() %><br>
+                <strong>Opis:</strong> <%= event.description || 'Brak opisu' %>
+            </li>
+        <% }) %>
+    </ul>
+<% } else { %>
+    <p>Nie masz jeszcze żadnych rezerwacji w historii.</p>
+<% } %>
+
+<h2 class="bonush">Twój poziom lojalności</h2>
+<p>Aktualny poziom: <strong><%= loyalty.level %></strong> (Zniżka: <%= loyalty.discount %>%)</p>
+
+<!-- Pasek lojalności -->
+<div class="loyalty-bar">
+    <!-- Sekcje poziomów lojalności -->
+    <div class="loyalty-segment silver">Silver (0-5)</div>
+    <div class="loyalty-segment platinum">Platinum (6-10)</div>
+    <div class="loyalty-segment gold">Gold (11+)</div>
+
+    <!-- Dynamiczny pasek postępu -->
+    <div class="loyalty-progress" data-progress="<%= loyalty.progress || 0 %>">
+        <span class="loyalty-label"></span>
+    </div>
+</div>
+
+
+
+<form action="/logout" method="POST">
+    <button class="logout" type="submit">Wyloguj</button>
+</form>
+
+</div>
+
+<script src="/js/dashboard.js"></script>
