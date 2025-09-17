@@ -1,0 +1,363 @@
+<div class="service_bg">
+    <div id="service-selection">
+        <h1 class="uslugi_h1">Panel rezerwacji</h1>
+        <form id="event-form">
+            <!-- Krok 1: Wybór kategorii -->
+            <div id="step-1" class="step show">
+                <h2>Krok 1: Wybierz kategorię usługi</h2>
+                <select id="category-select" onchange="showStep2()">
+                    <option value="" disabled selected hidden>Wybierz kategorię</option>
+                    <option value="color-change">Zmiana koloru auta</option>
+                    <option value="polishing">Polerowanie lakieru</option>
+                    <option value="interior-detailing">Detailing wnętrza</option>
+                    <option value="ppf">Bezbarwna folia ochronna PPF</option>
+                    <option value="protective-coatings">Powłoki ochronne</option>
+                    <option value="additional-services">Usługi dodatkowe</option>
+                </select>
+            </div>
+
+            <!-- Krok 2: Wybór wielkości auta -->
+            <div id="step-2" class="step">
+                <h2>Krok 2: Wybierz wielkość samochodu</h2>
+                <select id="size-select" onchange="showStep3()">
+                    <option value="" disabled selected hidden>Wybierz wielkość</option>
+                    <option value="small">Małe</option>
+                    <option value="medium">Średnie</option>
+                    <option value="large">Duże</option>
+                </select>
+            </div>
+
+            <!-- Krok 3: Wybór podusługi -->
+            <div id="step-3" class="step">
+                <h2>Krok 3: Wybierz podusługę</h2>
+                <select id="service-select" onchange="checkStep3Completion()">
+                    <option value="" disabled selected hidden>Wybierz podusługę</option>
+                </select>
+            </div>
+
+            <div id="step-4" class="step">
+                <h2>Krok 4: Podaj swoje dane</h2>
+                <div class="private-information">
+                    <label for="name">Imię:</label>
+                    <input type="text" id="name" placeholder="Wpisz swoje imię" required>
+                
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Wpisz swój email" value="<%= userEmail %>" required>
+
+                    <% if (!user) { %>
+                        <p style="color: red; font-size: 0.9rem; margin-top: 5px;">
+                            Jesteś niezalogowany – brak zniżek za poziom lojalności.
+                        </p>
+                    <% } %>
+                </div>                
+                <div class="timing">
+                    <label for="date">Wybierz datę:</label>
+                    <input type="date" id="date" lang="pl" required>
+                    <div id="time-slots-container">
+                        <label for="time">Wybierz godzinę:</label>
+                    </div>
+                </div>
+                <input type="hidden" id="time" name="time" value="">
+                <button type="submit" id="submit-button" style="display:none;">Zarezerwuj</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/formsubmit.js"></script>
+
+<script>
+    let selectedTime = null;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Привязываем событие к шагу 3 для проверки выбора услуги
+        document.getElementById("service-select").addEventListener("change", checkStep3Completion);
+
+        // Привязываем события к полям шага 4 для проверки их заполнения
+        document.getElementById("name").addEventListener("input", checkStep4Completion);
+        document.getElementById("email").addEventListener("input", checkStep4Completion);
+        document.getElementById("date").addEventListener("change", onDateChange);
+        document.getElementById("time-slots-container").addEventListener("change", checkStep4Completion);
+    });
+
+
+    function showStep2() {
+        // Сброс шага 2 и 3 при изменении категории
+        document.getElementById("size-select").value = "";
+        document.getElementById("service-select").innerHTML = '<option value="" disabled selected hidden>Wybierz podusługę</option>';
+        document.getElementById("submit-button").style.display = "none";
+
+        // Показать шаг 2
+        document.getElementById("step-2").classList.add("show");
+        document.getElementById("step-3").classList.remove("show");
+    }
+
+    function showStep3() {
+        let category = document.getElementById("category-select").value;
+        let size = document.getElementById("size-select").value;
+        let serviceSelect = document.getElementById("service-select");
+
+        // Zresetuj kalendarz (pole daty)
+        const dateInput = document.getElementById('date');
+        dateInput.value = ''; // Resetuj wartość daty
+
+        // Zresetuj dostępne godziny
+        const timeSlotsContainer = document.getElementById('time-slots-container');
+        if (timeSlotsContainer) {
+            timeSlotsContainer.innerHTML = ''; // Wyczyść dostępne godziny
+        }
+
+        // Ukryj przycisk rezerwacji (jeśli istnieje)
+        const submitButton = document.getElementById('submit-button');
+        if (submitButton) {
+            submitButton.style.display = 'none';
+        }
+
+        if (category === "color-change") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="full-body-small">Full body (Małe) - od 11 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-jam-small">Oklejanie wnęk auta (Małe) - od 2 999 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="full-body-medium">Full body (Średnie) - od 12 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-jam-medium">Oklejanie wnęk auta (Średnie) - od 3 499 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="full-body-large">Full body (Duże) - od 13 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-jam-large">Oklejanie wnęk auta (Duże) - od 4 499 zł</option>';
+            }
+        } else if (category === "polishing") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="revitalization-small">Rewitalizacja lakieru -usunięcie do 50% rys (1 etap) (Małe) - od 899 zł</option>';
+                serviceSelect.innerHTML += '<option value="correction-small">Korekta lakieru -usunięcie do 75% rys (2-3 etapy) (Małe) - od 1 099 zł</option>';
+                serviceSelect.innerHTML += '<option value="renovation-small">Renowacja lakieru -usunięcie do 95% rys (3-5 etapów) (Małe) - od 1 299 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="revitalization-medium">Rewitalizacja lakierу -usunięcie do 50% rys (1 etap)(Średnie) - od 1 099 zł</option>';
+                serviceSelect.innerHTML += '<option value="correction-medium">Korekta lakieru -usunięcie do 75% rys (2-3 etapy) (Średnie) - od 1 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="renovation-medium">Renowacja lakieru -usunięcie do 95% rys (3-5 etapów) (Średnie) - od 1 599 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="revitalization-large">Rewitalizacja lakierу -usunięcie do 50% rys (1 etap)(Duże) - od 1 399 zł</option>';
+                serviceSelect.innerHTML += '<option value="correction-large">Korekta lakieru -usunięcie do 75% rys (2-3 etapy) (Duże) - od 1 599 zł</option>';
+                serviceSelect.innerHTML += '<option value="renovation-large">Renowacja lakieru -usunięcie do 95% rys (3-5 etapów) (Duże) - od 1 899 zł</option>';
+            }
+        } else if (category === "ppf") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="bikini-small">Pakiet BIKINI (Małe) - od 2 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-front-small">Pakiet FULL FRONT (Małe) - od 4 799 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-body-small">Pakiet FULL BODY (Małe) - od 11 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="front-lights-small">Reflektory przednie (Małe) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="mirrors-small">Lusterka (Małe) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="loading-threshold-small">Próg załadowczy (Małe) - 349 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-handle-recesses-small">Wnęki klamek (Małe) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="hood-small">Maska (Małe) - od 1 399 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="bikini-medium">Pakiet BIKINI (Średnie) - od 3 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-front-medium">Pakiet FULL FRONT (Średnie) - od 5 199 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-body-medium">Pakiet FULL BODY (Średnie) - od 12 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="front-lights-medium">Reflektory przednie (Średnie) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="mirrors-medium">Lusterka (Średnie) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="loading-threshold-medium">Próg załadowczy (Średnie) - 349 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-handle-recesses-medium">Wnęki klamek (Średnie) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="hood-medium">Maska (Średnie) - od 1 399 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="bikini-large">Pakiet BIKINI (Duże) - od 3 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-front-large">Pakiet FULL FRONT (Duże) - od 5 799 zł</option>';
+                serviceSelect.innerHTML += '<option value="full-body-large">Pakiet FULL BODY (Duże) - od 13 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="front-lights-large">Reflektory przednie (Duże) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="mirrors-large">Lusterka (Duże) - 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="loading-threshold-large">Próg załadowczy (Duże) - 349 zł</option>';
+                serviceSelect.innerHTML += '<option value="door-handle-recesses-large">Wnęki klamek (Duże) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="hood-large">Maska (Duże) - od 1 399 zł</option>';
+            }
+        } else if (category === "protective-coatings") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="quartz-coating-small">Powłoka kwarcowa 12-miesięczna Autotriz Top (Małe) - od 799 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-3-years-small">Powłoka ceramiczna 3-letnia Autotriz 3D Matrix LIGHT (Małe) - od 1 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-5-years-small">Powłoka ceramiczna 5-letnia Autotriz 3D Matrix (Małe) - od 1 799 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-7-years-small">Powłoka ceramiczna 7-letnia Autotriz: 3D Matrix + Nano Serum (Małe) - od 2 399 zł</option>';
+                serviceSelect.innerHTML += '<option value="hard-wax-small">Wosk twardy (Małe) - od 399 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-front-small">Powłoka ceramiczna na felgi FRONT (Małe) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-full-small">Powłoka ceramiczna na felgi FUL (Małe) - 499 zł</option>';
+                serviceSelect.innerHTML += '<option value="hydrophobic-coating-small">Powłoka hydrofobowa na wszystkie szyby (Małe) - 349 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="quartz-coating-medium">Powłoka kwarcowa 12-miesięczna Autotriz Top (Średnie) - od 899 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-3-years-medium">Powłoka ceramiczna 3-letnia Autotriz 3D Matrix LIGHT (Średnie) - od 1 499 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-5-years-medium">Powłoka ceramiczna 5-letnia Autotriz 3D Matrix (Średnie) - od 1 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-7-years-medium">Powłoka ceramiczna 7-letnia Autotriz: 3D Matrix + Nano Serum (Średnie) - od 2 599 zł</option>';
+                serviceSelect.innerHTML += '<option value="hard-wax-medium">Wosk twardy (Średnie) - od 399 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-front-medium">Powłoka ceramiczna na felgi FRONT (Średnie) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-full-medium">Powłoka ceramiczna na felgi FUL (Średnie) - 499 zł</option>';
+                serviceSelect.innerHTML += '<option value="hydrophobic-coating-medium">Powłoka hydrofobowa na wszystkie szyby (Średnie) - 349 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="quartz-coating-large">Powłoka kwarcowa 12-miesięczna Autotriz Top (Duże) - od 999 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-3-years-large">Powłoka ceramiczna 3-letnia Autotriz 3D Matrix LIGHT (Duże) - od 1 699 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-5-years-large">Powłoka ceramiczna 5-letnia Autotriz 3D Matrix (Duże) - od 2 199 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-7-years-large">Powłoka ceramiczna 7-letnia Autotriz: 3D Matrix + Nano Serum (Duże) - od 2 799 zł</option>';
+                serviceSelect.innerHTML += '<option value="hard-wax-large">Wosk twardy (Duże) - od 499 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-front-large">Powłoka ceramiczna na felgi FRONT (Duże) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-wheels-full-large">Powłoka ceramiczna na felgi FUL (Duże) - 499 zł</option>';
+                serviceSelect.innerHTML += '<option value="hydrophobic-coating-large">Powłoka hydrofobowa na wszystkie szyby (Duże) - 349 zł</option>';
+            }
+        } else if (category === "interior-detailing") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="interior-refresh-small">Odświeżanie wnętrza (Małe) - od 199 zł</option>';
+                serviceSelect.innerHTML += '<option value="comprehensive-detailing-small">Kompleksowy detailing wnętrza (Małe) - od 599 zł</option>';
+                serviceSelect.innerHTML += '<option value="seat-cleaning-small">Pranie foteli i kanapy (Małe) - od 149 zł</option>';
+                serviceSelect.innerHTML += '<option value="leather-cleaning-small">Czyszczenie skóry fotele i kanapa (Małe) - od 199 zł</option>';
+                serviceSelect.innerHTML += '<option value="fabric-upholstery-small">Impregnacja tapicerki materiałowej (Małe) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-upholstery-small">Zabezpieczenie tapicerki skórzanej powłoką ceramiczną (Małe) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="plastic-protection-small">Zabezpieczenie elementów plastikowych (Małe) - 79 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="interior-refresh-medium">Odświeżanie wnętrza (Średnie) - od 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="comprehensive-detailing-medium">Kompleksowy detailing wnętrza (Średnie) - od 699 zł</option>';
+                serviceSelect.innerHTML += '<option value="seat-cleaning-medium">Pranie foteli i kanapy (Średnie) - od 199 zł</option>';
+                serviceSelect.innerHTML += '<option value="leather-cleaning-medium">Czyszczenie skóry fotele i kanapa (Średnie) - od 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="fabric-upholstery-medium">Impregnacja tapicerki materiałowej (Średnie) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-upholstery-medium">Zabezpieczenie tapicerki skórzanej powłoką ceramiczną (Średnie) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="plastic-protection-medium">Zabezpieczenie elementów plastikowych (Średnie) - 79 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="interior-refresh-large">Odświeżanie wnętrza (Duże) - od 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="comprehensive-detailing-large">Kompleksowy detailing wnętrza (Duże) - od 899 zł</option>';
+                serviceSelect.innerHTML += '<option value="seat-cleaning-large">Pranie foteli i kanapy (Duże) - od 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="leather-cleaning-large">Czyszczenie skóry fotele i kanapa (Duże) - od 299 zł</option>';
+                serviceSelect.innerHTML += '<option value="fabric-upholstery-large">Impregnacja tapicerki materiałowej (Duże) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="ceramic-coating-upholstery-large">Zabezpieczenie tapicerki skórzanej powłoką ceramiczną (Duże) - 249 zł</option>';
+                serviceSelect.innerHTML += '<option value="plastic-protection-large">Zabezpieczenie elementów plastikowych (Duże) - 79 zł</option>';
+            }
+        } else if (category === "additional-services") {
+            if (size === "small") {
+                serviceSelect.innerHTML += '<option value="window-tinting-small">Przyciemnianie szyb (Małe) - od 649 zł</option>';
+                serviceSelect.innerHTML += '<option value="scratch-masking-small">Maskowanie rys (Małe) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="paint-touch-ups-small">Zaprawki lakiernicze (Małe) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="pdr-dent-removal-small">Usuwanie wgnieceń PDR (Małe) - od 149 zł</option>';
+                serviceSelect.innerHTML += '<option value="headlight-renovation-small">Renowacja reflektorów (Małe) - od 199 zł</option>';
+            } else if (size === "medium") {
+                serviceSelect.innerHTML += '<option value="window-tinting-medium">Przyciemnianie szyb (Średnie) - od 699 zł</option>';
+                serviceSelect.innerHTML += '<option value="scratch-masking-medium">Maskowanie rys (Średnie) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="paint-touch-ups-medium">Zaprawki lakiernicze (Średnie) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="pdr-dent-removal-medium">Usuwanie wgnieceń PDR (Średnie) - od 149 zł</option>';
+                serviceSelect.innerHTML += '<option value="headlight-renovation-medium">Renowacja reflektorów (Średnie) - od 199 zł</option>';
+            } else if (size === "large") {
+                serviceSelect.innerHTML += '<option value="window-tinting-large">Przyciemnianie szyb (Duże) - od 749 zł</option>';
+                serviceSelect.innerHTML += '<option value="scratch-masking-large">Maskowanie rys (Duże) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="paint-touch-ups-large">Zaprawki lakiernicze (Duże) - od 99 zł</option>';
+                serviceSelect.innerHTML += '<option value="pdr-dent-removal-large">Usuwanie wgnieceń PDR (Duże) - od 149 zł</option>';
+                serviceSelect.innerHTML += '<option value="headlight-renovation-large">Renowacja reflektorów (Duże) - od 199 zł</option>';
+            }
+        }
+
+        document.getElementById("step-3").classList.add("show");
+    }
+    function checkStep3Completion() {
+        let serviceSelect = document.getElementById("service-select");
+
+        if (serviceSelect.value) {
+            document.getElementById("step-4").classList.add("show");
+        } else {
+            document.getElementById("step-4").classList.remove("show");
+            document.getElementById("submit-button").style.display = "none"; 
+        }
+    }
+
+    function onDateChange() {
+    const selectedDate = document.getElementById('date').value;
+    if (!selectedDate) return;
+
+    const size = document.getElementById('size-select').value; // Pobierz wielkość auta
+    if (!size) {
+        console.error('Nie wybrano wielkości auta.');
+        return;
+    }
+
+    // Określ, ile godzin jest wymagane dla wybranego rozmiaru
+    const durationMapping = {
+        small: 1,
+        medium: 2,
+        large: 2,
+    };
+    const serviceDuration = durationMapping[size] || 1;
+
+    fetch('/getBusyTimes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: selectedDate }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            const availableHours = data.availableHours;
+            const allHours = Array.from({ length: 12 }, (_, i) => i + 8); // Zakres godzin od 8:00 do 20:00
+
+            const timeSlotsContainer = document.getElementById('time-slots-container');
+            timeSlotsContainer.innerHTML = ''; // Wyczyść poprzednie sloty
+
+            const today = new Date().toISOString().split('T')[0];
+            const currentHour = new Date().getHours(); // Aktualna godzina
+
+            allHours.forEach(hour => {
+                const timeOption = document.createElement('div');
+                timeOption.classList.add('time-slot');
+                timeOption.textContent = `${hour}:00`;
+                timeOption.setAttribute('data-time', `${hour}:00`);
+
+                // Sprawdź, czy godzina spełnia wymagania czasowe
+                let isValid = true;
+
+                // Jeśli wybrana data to dzisiaj, godzina musi być późniejsza niż aktualna
+                if (selectedDate === today && hour <= currentHour) {
+                    isValid = false;
+                }
+
+                for (let offset = 0; offset < serviceDuration; offset++) {
+                    if (!availableHours.includes(hour + offset)) {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (!isValid) {
+                    timeOption.classList.add('disabled'); // Oznacz godzinę jako niedostępną
+                    timeOption.onclick = null; // Usuń możliwość kliknięcia
+                } else {
+                    timeOption.onclick = selectTimeSlot; // Dodaj obsługę kliknięcia
+                }
+
+                timeSlotsContainer.appendChild(timeOption);
+            });
+        })
+        .catch(error => console.error('Błąd podczas ładowania godzin:', error));
+}
+
+    // Funkcja obsługująca wybór godziny
+    function selectTimeSlot(event) {
+        const timeSlots = document.querySelectorAll('.time-slot');
+
+        // Usuń klasę 'selected' z innych slotów
+        timeSlots.forEach(slot => slot.classList.remove('selected'));
+
+        // Dodaj klasę 'selected' do wybranego slotu
+        event.target.classList.add('selected');
+
+        // Zapisz wybraną godzinę
+        selectedTime = event.target.getAttribute('data-time');
+        console.log(`Wybrano godzinę: ${selectedTime}`);
+
+        // Przypisz wybraną godzinę do ukrytego pola
+        document.getElementById('time').value = selectedTime;
+
+        // Sprawdź, czy wszystkie kroki są wypełnione
+        checkStep4Completion();
+    }
+
+
+    function checkStep4Completion() {
+        const name = document.getElementById("name").value.trim(); // Sprawdzanie pola imię
+        const email = document.getElementById("email").value.trim(); // Sprawdzanie pola email
+        const date = document.getElementById("date").value; // Sprawdzanie daty
+
+        // Sprawdź, czy wszystkie wymagane pola są wypełnione
+        if (name !== "" && email !== "" && date !== "" && selectedTime !== null) {
+            document.getElementById("submit-button").style.display = "block"; // Pokaż przycisk
+        } else {
+            document.getElementById("submit-button").style.display = "none"; // Ukryj przycisk
+        }
+
+    }
+
+</script>
